@@ -23,8 +23,8 @@ class RagAi(BaseModel):
     def get_api_key(self):
         return c.OPENAI_API_KEY
     
-    def load_pdfs(self, pdf_name: str = "manual.pdf"):
-        loader = PyPDFLoader(pdf_name)
+    def load_pdfs(self, pdf_name: str = "default.pdf"):
+        loader = PyPDFLoader("./pdfs/" + pdf_name)
         return loader.load_and_split()
     
     def ask_context(self, context: str, question: str):

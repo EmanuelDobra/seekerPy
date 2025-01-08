@@ -1,4 +1,6 @@
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
+
 # http://127.0.0.1:8000/docs
 # http://127.0.0.1:8000/redoc
 # http://127.0.0.1:8000/openapi.json
@@ -25,14 +27,38 @@ print(bot.get_api_key())
 #     print(f"Answer: {bot.ask_rag(question)}")
 #     print()
 
+origins = [
+    "http://localhost:4200",
+    "http://localhost:8080",
+    "http://localhost:1234"
+]
 
-@app.get("/api/rag")
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+@app.get("/api/rag/count-words")
 async def rag_root():
     return bot.ask_rag("How many words are there in my text?")
 
 @app.get("/api/rag/{question}")
 async def rag_ask(question: str):
     return bot.ask_rag(question)
+
+### TEST
+from question.question import Question
+
+@app.post("/api/rag/completions")
+async def rag_ask(question: Question):
+    return bot.ask_rag(question.text)
+
+
+
+
 
 ### Example
 from item.item import Item
@@ -112,5 +138,3 @@ async def update_user(user_update: UserUpdateRequest, user_id: UUID):
             user.roles = user_update.roles or user.roles
             return
         raise HTTPException(status_code=404, detail=f"user with id: {user.id} does not exist")
-    
-### Example 3
