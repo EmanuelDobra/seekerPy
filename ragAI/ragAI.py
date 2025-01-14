@@ -7,6 +7,7 @@ from langchain_community.document_loaders import PyPDFLoader
 from langchain.prompts import PromptTemplate
 from langchain_community.vectorstores import DocArrayInMemorySearch
 from operator import itemgetter
+from question.question import PdfQuestion
 
 model = ChatOpenAI(base_url=c.BASE_URL, api_key=c.OPENAI_API_KEY)
 embeddings = OpenAIEmbeddings()
@@ -39,10 +40,10 @@ class RagAi(BaseModel):
         pages = self.load_pdfs()
         vectorstore = DocArrayInMemorySearch.from_documents(pages, embedding=embeddings)
         retriever = vectorstore.as_retriever()
-        retriever.invoke("Give me a few passages on fasting")
+        retriever.invoke("What is the primary point of this text?")
 
-    def ask_rag(self, question: str):
-        pages = self.load_pdfs()
+    def ask_rag_default(self, question: str):
+        pages = self.load_pdfs("default.pdf")
         vectorstore = DocArrayInMemorySearch.from_documents(pages, embedding=embeddings)
         retriever = vectorstore.as_retriever()
         chain = (
@@ -56,6 +57,23 @@ class RagAi(BaseModel):
             | parser
         )
         return chain.invoke({"question": question})
+
+    def ask_rag(self, pdfQuestion: PdfQuestion):
+        print(pdfQuestion)
+        pages = self.load_pdfs(pdfQuestion.pdf or "default.pdf")
+        vectorstore = DocArrayInMemorySearch.from_documents(pages, embedding=embeddings)
+        retriever = vectorstore.as_retriever()
+        chain = (
+            {
+                "context": itemgetter("question") 
+                | retriever,
+                "question": itemgetter("question")
+            }
+            | prompt
+            | model
+            | parser
+        )
+        return chain.invoke({"question": pdfQuestion.question})
 
 if __name__ == '__main__':
     print("WRONG")

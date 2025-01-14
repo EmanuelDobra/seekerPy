@@ -46,15 +46,15 @@ async def rag_root():
     return bot.ask_rag("How many words are there in my text?")
 
 @app.get("/api/rag/{question}")
-async def rag_ask(question: str):
-    return bot.ask_rag(question)
+async def rag_ask_default(question: str):
+    return bot.ask_rag_default(question)
 
 ### TEST
-from question.question import Question
+from question.question import PdfQuestion
 
 @app.post("/api/rag/completions")
-async def rag_ask(question: Question):
-    return bot.ask_rag(question.text)
+async def rag_ask(pdfQuestion: PdfQuestion):
+    return bot.ask_rag(pdfQuestion)
 
 
 
