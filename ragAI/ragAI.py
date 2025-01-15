@@ -25,6 +25,8 @@ class RagAi(BaseModel):
         return c.OPENAI_API_KEY
     
     def load_pdfs(self, pdf_name: str = "default.pdf"):
+        if ".pdf" not in pdf_name:
+            pdf_name += ".pdf"
         loader = PyPDFLoader("./pdfs/" + pdf_name)
         return loader.load_and_split()
     
