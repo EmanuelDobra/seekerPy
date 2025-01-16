@@ -1,6 +1,6 @@
 # Prereqs
 1. Python 3.11.9 version (others might work too)
-2. Create .env file in project and store OPENAI_API_KEY
+2. Create .env file in project and store OPENAI_API_KEY (if using their embeddings)
 3. Have an active LLM (change endpoint if using something other than LM Studio)
 
 # Setup

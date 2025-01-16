@@ -1,32 +1,21 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from models.question.question import PdfQuestion
+from ragAI.ragAI import RagAi
 
+# Useful
 # http://127.0.0.1:8000/docs
 # http://127.0.0.1:8000/redoc
 # http://127.0.0.1:8000/openapi.json
 
 app = FastAPI()
 
-### Actual App
-from ragAI.ragAI import RagAi
-
+# Test LLM works
 bot = RagAi()
-#print(bot.ask("Why is the sky blue?"))
 print(bot.get_api_key())
-#print(bot.ask_rag("How many words are there?"))
+print(bot.ask_rag_default("How many words are there?"))
 
-# questions = [
-#     "What does Isaiah 58:6-14 say about fasting?",
-#     "What does I Kings 21:20-29 say?",
-#     "Which verse talks about God bringing gladness to the heart?",
-#     "Which verse described a passion for God?",
-# ]
-
-# for question in questions:
-#     print(f"Question: {question}")
-#     print(f"Answer: {bot.ask_rag(question)}")
-#     print()
-
+# Setup CORS
 origins = [
     "http://localhost:4200",
     "http://localhost:8080",
@@ -41,6 +30,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Get data through url of request
 @app.get("/api/rag/count-words")
 async def rag_root():
     return bot.ask_rag("How many words are there in my text?")
@@ -49,48 +39,14 @@ async def rag_root():
 async def rag_ask_default(question: str):
     return bot.ask_rag_default(question)
 
-### TEST
-from question.question import PdfQuestion
-
+# Get data through body of request
 @app.post("/api/rag/completions")
 async def rag_ask(pdfQuestion: PdfQuestion):
     return bot.ask_rag(pdfQuestion)
 
-
-
-
-
-### Example
-from item.item import Item
-
-items = [Item(text="First task"), Item(text="Second task", is_done=True)]
-
-@app.get("/")
-async def root():
-    return {"Hello": "World"}
-
-# curl -X POST -H "Content-Type: application/json" -d '{"text":"apple"}' 'http://127.0.0.1:8000/items'
-@app.post("/items")
-def create_item(item: Item):
-    items.append(item)
-    return items
-
-# curl -X GET http://127.0.0.1:8000/items?limit=1
-@app.get("/items", response_model=list[Item])
-def list_items(limit: int = 10):
-    return items[0:limit]
-
-# curl -X GET http://127.0.0.1:8000/items/1
-@app.get("/items/{item_id}", response_model=Item)
-def get_item(item_id: int) -> Item:
-    if item_id < len(items):
-        return items[item_id]
-    else: 
-        raise HTTPException(status_code=404, detail=f"Item {item_id} not found")
-
-### Example 2
+### Python FastApi Tutorial ###
 from typing import List
-from user.user import User, Gender, Role, UserUpdateRequest
+from models.user.user import User, Gender, Role, UserUpdateRequest
 from uuid import UUID
 
 db: List[User] = [
