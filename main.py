@@ -1,6 +1,6 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from models.question.question import PdfQuestion
+from models.question.question import PdfQuestion, RagQuestion
 from ragAI.ragAI import RagAi
 
 # Useful
@@ -13,7 +13,8 @@ app = FastAPI()
 # Test LLM works
 bot = RagAi()
 print(bot.get_api_key())
-print(bot.ask_rag_default("How many words are there?"))
+# print(bot.ask_rag_default2("What is quoted in this text?"))
+# print(bot.ask_rag_default("What is quoted in this text?"))
 
 # Setup CORS
 origins = [
@@ -31,18 +32,18 @@ app.add_middleware(
 )
 
 # Get data through url of request
-@app.get("/api/rag/count-words")
-async def rag_root():
-    return bot.ask_rag("How many words are there in my text?")
-
 @app.get("/api/rag/{question}")
 async def rag_ask_default(question: str):
     return bot.ask_rag_default(question)
 
 # Get data through body of request
-@app.post("/api/rag/completions")
+@app.post("/api/rag/completions/pdf")
 async def rag_ask(pdfQuestion: PdfQuestion):
-    return bot.ask_rag(pdfQuestion)
+    return bot.ask_rag_pdf(pdfQuestion)
+
+@app.post("/api/rag/completions/any")
+async def rag_ask(ragQuestion: RagQuestion):
+    return bot.ask_rag_any(ragQuestion)
 
 ### Python FastApi Tutorial ###
 from typing import List

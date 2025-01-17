@@ -12,3 +12,16 @@
 
 # Testing
 1. Check http://127.0.0.1:8000/docs and try out endpoints you want to use
+
+# Miniconda
+1. https://www.anaconda.com/download/success Install miniconda (and setup global paths)
+2. `conda create -n nameIt python=3.11`
+3. `conda activate nameIt`
+4. `pip install -r .\requirements.txt`
+5. C:\Users\EpicDev\miniconda3\envs
+
+## Extra
+- `conda update conda`
+- `conda env list`
+- `conda deactivate`
+- `conda remove -n py311 --all`
