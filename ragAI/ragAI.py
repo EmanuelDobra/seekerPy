@@ -68,7 +68,7 @@ class RagAi(BaseModel):
             pages = self.load_pdfs(ragQuestion.file_name)
         elif ragQuestion.rag_type == "text":
             pages = h.chunk_text(ragQuestion.context)
-        else:
+        else: # Might use different formats later on
             pages = h.chunk_text(ragQuestion.context)
         vectorstore = DocArrayInMemorySearch.from_documents(pages, embedding=embeddings)
         retriever = vectorstore.as_retriever()
