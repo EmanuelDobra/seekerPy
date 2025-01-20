@@ -12,9 +12,6 @@ app = FastAPI()
 
 # Test LLM works
 bot = RagAi()
-print(bot.get_api_key())
-# print(bot.ask_rag_default2("What is quoted in this text?"))
-# print(bot.ask_rag_default("What is quoted in this text?"))
 
 # Setup CORS
 origins = [

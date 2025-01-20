@@ -8,7 +8,7 @@ from langchain.prompts import PromptTemplate
 from langchain_community.vectorstores import DocArrayInMemorySearch
 from operator import itemgetter
 from models.question.question import PdfQuestion, RagQuestion
-from localEmbeddings import LocalEmbeddings
+from ragAI.localEmbeddings import LocalEmbeddings
 
 # Local Models
 model = ChatOpenAI(base_url=c.BASE_URL, api_key=c.OPENAI_API_KEY, model=c.GRANITE_MODEL)
